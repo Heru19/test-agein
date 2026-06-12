@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Greeting Section -->
+  <header class="greeting-section">
+    <div class="datetime">
+      <span id="current-time"></span>
+      <span id="current-date"></span>
+    </div>
+    <h1 id="greeting-text"></h1>
+  </header>
+
+  <main class="dashboard-grid">
+
+    <!-- Focus Timer -->
+    <section class="card timer-card">
+      <h2>Focus Timer</h2>
+      <div class="timer-display" id="timer-display">25:00</div>
+      <div class="timer-controls">
+        <button id="timer-start" class="btn btn-primary">Start</button>
+        <button id="timer-stop" class="btn btn-secondary">Stop</button>
+        <button id="timer-reset" class="btn btn-ghost">Reset</button>
+      </div>
+    </section>
+
+    <!-- To-Do List -->
+    <section class="card todo-card">
+      <h2>To-Do List</h2>
+      <div class="todo-input-row">
+        <input type="text" id="todo-input" placeholder="Add a new task…" maxlength="120" />
+        <button id="todo-add" class="btn btn-primary">Add</button>
+      </div>
+      <ul id="todo-list"></ul>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="card links-card">
+      <h2>Quick Links</h2>
+      <div class="link-input-row">
+        <input type="text" id="link-name-input" placeholder="Name" maxlength="30" />
+        <input type="url" id="link-url-input" placeholder="https://…" maxlength="300" />
+        <button id="link-add" class="btn btn-primary">Add</button>
+      </div>
+      <div id="links-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- Edit Task Modal -->
+  <div id="edit-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <h3 id="modal-title">Edit Task</h3>
+      <input type="text" id="edit-input" maxlength="120" />
+      <div class="modal-actions">
+        <button id="edit-save" class="btn btn-primary">Save</button>
+        <button id="edit-cancel" class="btn btn-ghost">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
