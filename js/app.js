@@ -19,22 +19,62 @@ const storage = {
 };
 
 /* =============================================
+   NAME SCREEN (first-visit prompt)
+   ============================================= */
+(function initNameScreen() {
+  const NAME_KEY = 'dashboard_username';
+  const screen = document.getElementById('name-screen');
+  const nameInput = document.getElementById('name-input');
+  const submitBtn = document.getElementById('name-submit');
+
+  function saveName() {
+    const name = nameInput.value.trim();
+    if (!name) {
+      nameInput.focus();
+      return;
+    }
+    storage.set(NAME_KEY, name);
+    hideScreen();
+    // Notify the clock module to update the greeting immediately
+    document.dispatchEvent(new CustomEvent('nameUpdated', { detail: { name } }));
+  }
+
+  function hideScreen() {
+    screen.classList.add('hidden');
+    screen.setAttribute('aria-hidden', 'true');
+  }
+
+  // Show screen only if no name is stored yet
+  const stored = storage.get(NAME_KEY, '');
+  if (!stored) {
+    screen.classList.remove('hidden');
+    setTimeout(() => nameInput.focus(), 50);
+  }
+
+  submitBtn.addEventListener('click', saveName);
+  nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveName(); });
+})();
+
+/* =============================================
    GREETING & DATE/TIME
    ============================================= */
 (function initClock() {
+  const NAME_KEY = 'dashboard_username';
   const timeEl = document.getElementById('current-time');
   const dateEl = document.getElementById('current-date');
   const greetEl = document.getElementById('greeting-text');
 
-  function greetingFor(hour) {
-    if (hour < 12) return '☀️ Good morning!';
-    if (hour < 17) return '🌤️ Good afternoon!';
-    if (hour < 21) return '🌙 Good evening!';
-    return '🌜 Good night!';
+  function greetingFor(hour, name) {
+    const suffix = name ? `, ${name}!` : '!';
+    if (hour < 12) return `☀️ Good morning${suffix}`;
+    if (hour < 17) return `🌤️ Good afternoon${suffix}`;
+    if (hour < 21) return `🌙 Good evening${suffix}`;
+    return `🌜 Good night${suffix}`;
   }
 
   function tick() {
     const now = new Date();
+    const name = storage.get(NAME_KEY, '');
 
     // Time
     timeEl.textContent = now.toLocaleTimeString([], {
@@ -51,12 +91,15 @@ const storage = {
       day: 'numeric',
     });
 
-    // Greeting (update once per minute boundary)
-    greetEl.textContent = greetingFor(now.getHours());
+    // Greeting with name
+    greetEl.textContent = greetingFor(now.getHours(), name);
   }
 
   tick();
   setInterval(tick, 1000);
+
+  // Update greeting immediately when a name is saved from the name screen
+  document.addEventListener('nameUpdated', tick);
 })();
 
 /* =============================================
